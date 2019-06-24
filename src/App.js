@@ -1,26 +1,72 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+/* eslint-disable jsx-a11y/accessible-emoji */
 
-function App() {
+import React, { useState } from 'react'
+import VerEx from 'verbal-expressions'
+import './App.css'
+
+const DEFAULT_PASSWORD = ''
+
+const Person = ({ children }) => (
+  <strong>
+    {children}:
+  </strong>
+)
+
+const Emoji = ({ children, label }) => (
+  <span role="img" aria-label={label}>
+    {children}
+  </span>
+)
+
+const passwordTest = VerEx()
+  .removeModifier('g')
+  .startOfLine()
+  .then('Caput Draconis')
+  .or(
+    VerEx()
+      .then('Fortuna')
+      .then(' ')
+      .maybe(
+        VerEx()
+          .word()
+          .then(' ')
+      )
+      .then('Major')
+      .or('Majeure')
+  )
+  .withAnyCase()
+
+const isPasswordValid = password => passwordTest.test(password)
+
+const App = ()  => {
+  const [password, setPassword] = useState(DEFAULT_PASSWORD)
+
+  const handlePasswordChange = e => setPassword(e.target.value)
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <p>
+        <Person>The Fat Lady</Person>
+        {' '}
+        Password?
+      </p>
+      <p>
+        <Person>Harry Potter</Person>
+        {' '}
+        <input
+          type="text"
+          value={password}
+          onChange={handlePasswordChange}
+        />
+      </p>
+      <p>
+        <Person>The Fat Lady</Person>
+        {!isPasswordValid(password)
+          ? <Emoji label="woman shrugging">🤷‍</Emoji>
+          : <Emoji label="slightly smiling face">🙂</Emoji>}
+      </p>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
