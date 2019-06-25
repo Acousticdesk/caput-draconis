@@ -21,19 +21,13 @@ const Emoji = ({ children, label }) => (
 const passwordTest = VerEx()
   .removeModifier('g')
   .startOfLine()
-  .then('Caput Draconis')
-  .or(
+  .then('Caput ')
+  .maybe(
     VerEx()
-      .then('Fortuna')
+      .word()
       .then(' ')
-      .maybe(
-        VerEx()
-          .word()
-          .then(' ')
-      )
-      .then('Major')
-      .or('Majeure')
   )
+  .then('Draconis')
   .withAnyCase()
 
 const isPasswordValid = password => passwordTest.test(password)
